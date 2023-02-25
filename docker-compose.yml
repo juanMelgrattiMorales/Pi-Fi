@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DYNAMO_ENDPOINT=http://dynamodb:8000
+    depends_on:
+      - dynamodb
+    expose:
+      - 3000
+
+  dynamodb:
+    image: amazon/dynamodb-local
+    command: "-jar DynamoDBLocal.jar -sharedDb"
+    ports:
+      - "8000:8000"
+    volumes:
+      - dynamodb-data:/data
+    expose:
+      - 8000
+
+
+  # dynamodbadmin:
+  #   image: aaronshaf/dynamodb-admin
+  #   ports:
+  #     - "8001:8001"
+  #   environment:
+  #     - DYNAMO_ENDPOINT=http://dynamodb:8000
+  #   depends_on:
+  #     - dynamodb
+
+volumes:
+  dynamodb-data:

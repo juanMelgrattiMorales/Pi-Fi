@@ -1,0 +1,36 @@
+service: guild-path
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+
+functions:
+  guild-path_create_guild: 
+    handler: src/functions/guild/create_guild.handler
+    events:
+      - http:
+          path: /create-guild
+          method: POST
+
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+  - serverless-plugin-typescript
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: true
+    tables:
+      - name: guilds
+        primaryKey:
+          name: uuid
+          type: S
